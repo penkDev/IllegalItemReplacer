@@ -2,19 +2,18 @@ package me.Xaxis.replace.gui;
 
 import me.Xaxis.replace.IIR;
 import me.Xaxis.replace.utility.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class EmptyGui {
 
-    private final IIR INSTANCE;
+    public final IIR INSTANCE;
     private String TITLE;
     private int SIZE;
     private final ItemStack NEXT_BUTTON = new ItemStack(Material.PAPER);
+    Gui gui;
 
 
     public EmptyGui(IIR instance){
@@ -25,8 +24,8 @@ public class EmptyGui {
 
     public void openEmptyGui(Player player){
 
-        Inventory inventory = Bukkit.createInventory(player, 54, Utils.chat(TITLE));
-        player.openInventory(inventory);
+        gui = new Gui(INSTANCE, TITLE, SIZE, player);
+        player.openInventory(gui.getInventory());
 
     }
 
