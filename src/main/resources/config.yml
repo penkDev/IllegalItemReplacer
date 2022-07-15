@@ -1,0 +1,17 @@
+# Everything is this config supports color code using the '&' symbol with the corresponding number after it.
+# Example: &4Example of &bcolor &c code
+
+
+LANG:
+  NO_PERMISSION: '&4You do not have the required permissions to execute this command!'
+  SENDER_NOT_PLAYER: '&4You cannot execute this command from the terminal'
+
+OPTIONS:
+  PREFIX:
+    USE_PREFIX: true
+    PREFIX_TEXT: '&7[&b&lIIR&r&7] '
+
+GUI:
+  PLACE_ITEMS_GUI:
+    TITLE: "&7Place your banned items here: "
+    SIZE: 54

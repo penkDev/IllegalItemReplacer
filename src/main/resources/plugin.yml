@@ -1,0 +1,9 @@
+name: IllegalItemReplacer
+main: me.Xaxis.replace.IIR
+version: 1.0
+commands:
+  replaceItem:
+    description: Replace items.
+    aliases:
+      - ri
+    permission: IllegalItemReplacer.replaceItems
