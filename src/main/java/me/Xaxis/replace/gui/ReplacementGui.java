@@ -12,7 +12,7 @@ public class ReplacementGui {
 
     public final IIR INSTANCE;
     private final ItemStack SAVE_BUTTON = new ItemStack(Material.PAPER);
-    GUI emptyGUI=GUI.EMPTY_GUI;
+    GUI emptyGUI=GUI.REPLACEMENT_GUI;
     Gui gui;
     private final BannedItemManager itemManager;
 
