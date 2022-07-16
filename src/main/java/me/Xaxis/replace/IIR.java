@@ -2,6 +2,7 @@ package me.Xaxis.replace;
 
 import me.Xaxis.replace.File.BannedItems;
 import me.Xaxis.replace.Listener.onInventoryClick;
+import me.Xaxis.replace.Listener.onInventoryOpen;
 import me.Xaxis.replace.Manager.BannedItemManager;
 import me.Xaxis.replace.commands.ReplaceCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,9 +31,7 @@ public class IIR extends JavaPlugin {
         Objects.requireNonNull(getCommand("replaceItem")).setExecutor(new ReplaceCommand(this, itemsFile));
         saveDefaultConfig();
         getServer().getPluginManager().registerEvents(new onInventoryClick(this, bannedItems), this);
-
-        itemsFile.get().set("Hi", "hello");
-        itemsFile.save();
+        getServer().getPluginManager().registerEvents(new onInventoryOpen(this, bannedItems), this);
 
 
     }

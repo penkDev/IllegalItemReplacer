@@ -38,7 +38,13 @@ public class onInventoryOpen implements Listener {
                 for(ItemStack i : itemManager.getItems()){
 
                     if(item.isSimilar(i)){
-                        inventory.setItem(entry.getKey(), itemManager.getItemMap().get(i));
+
+                        int amt = i.getAmount();
+
+                        ItemStack v = itemManager.getItemMap().get(i).clone();
+                        v.setAmount(amt);
+
+                        inventory.setItem(entry.getKey(), v);
                     }
 
                 }
