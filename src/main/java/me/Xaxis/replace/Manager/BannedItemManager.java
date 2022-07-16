@@ -2,28 +2,29 @@ package me.Xaxis.replace.Manager;
 
 import me.Xaxis.replace.File.BannedItems;
 import me.Xaxis.replace.IIR;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class BannedItemManager {
 
-    private final IIR instance;
     private ArrayList<ItemStack> items;
     private HashMap<ItemStack, ItemStack> itemMap;
     ConfigurationSection itemsSection;
     BannedItems file;
 
-    public BannedItemManager(BannedItems file, IIR instance){
-        this.instance = instance;
+    public BannedItemManager(BannedItems file){
         this.file = file;
     }
-
     public void loadItems(){
+
+        items = new ArrayList<>();
+        itemMap = new HashMap<>();
 
         if(!file.get().getKeys(false).contains("Items")) {
             itemsSection = file.get().createSection("Items");
@@ -33,74 +34,63 @@ public class BannedItemManager {
         file.save();
 
         if(!itemsSection.getKeys(false).isEmpty()) {
+
             for (String name : itemsSection.getKeys(false)) {
 
-                ItemStack item = itemsSection.getItemStack(name);
-                ConfigurationSection itemStackSection = itemsSection.getConfigurationSection(name);
-                assert itemStackSection != null;
-                ItemStack replace = itemStackSection.getItemStack("replacementItem");
+                ConfigurationSection itemsConfigSection = itemsSection.getConfigurationSection(name);
+
+                if (itemsConfigSection == null) return;
+
+                ItemStack replace = null;
+                ItemStack item = null;
+
+                for (String sectionName : itemsConfigSection.getKeys(false)) {
+
+                    if (sectionName.equalsIgnoreCase("replacementItem")) {
+
+                        replace = itemsConfigSection.getItemStack("replacementItem");
+
+                    } else {
+
+                        item = itemsConfigSection.getItemStack(name);
+
+                    }
+
+                }
+
+                if (item == null) return;
+                if (replace == null) return;
+
                 items.add(item);
                 itemMap.put(item, replace);
-                assert item != null;
-                if(item.hasItemMeta()){
-                    System.out.println("Loaded Item: " + Objects.requireNonNull(item.getItemMeta()).getDisplayName());
-                }else{
+
+                if (item.getItemMeta() != null) {
+                    System.out.println("Loaded Item: " + item.getItemMeta().getDisplayName());
+                } else {
                     System.out.println("Loaded Item: " + item.getType().name());
                 }
 
+
             }
         }
 
     }
-    public void addItem(@NotNull ItemStack i, ItemStack replacement){
+    public void addItem(@NotNull ItemStack i,@NotNull ItemStack replacement) {
 
-        if(i.hasItemMeta()){
-            itemsSection.set(Objects.requireNonNull(i.getItemMeta()).getDisplayName(), i);
-            ConfigurationSection itemStackSection = itemsSection.getConfigurationSection(i.getItemMeta().getDisplayName());
-            assert itemStackSection != null;
-            itemStackSection.set("replacementItem", replacement);
-            itemMap.put(i, replacement);
-        }else{
-            itemsSection.set(i.getType().name(), i);
-            ConfigurationSection itemStackSection = itemsSection.getConfigurationSection(i.getType().name());
-            assert itemStackSection != null;
-            itemStackSection.set("replacementItem", replacement);
-            itemMap.put(i, replacement);
-        }
+        ConfigurationSection is = itemsSection.createSection(i.getType().name());
 
-    }
-    public void addItems(ItemStack @NotNull [] item, ItemStack replacement){
+        is.set(i.toString(), i);
 
-        for(ItemStack i : item){
+        is.set("replacementItem", replacement);
 
-            if(i.hasItemMeta()){
-                itemsSection.set(Objects.requireNonNull(i.getItemMeta()).getDisplayName(), i);
-                ConfigurationSection itemStackSection = itemsSection.getConfigurationSection(i.getItemMeta().getDisplayName());
-                assert itemStackSection != null;
-                itemStackSection.set("replacementItem", replacement);
-                itemMap.put(i, replacement);
-            }else{
-                itemsSection.set(i.getType().name(), i);
-                ConfigurationSection itemStackSection = itemsSection.getConfigurationSection(i.getType().name());
-                assert itemStackSection != null;
-                itemStackSection.set("replacementItem", replacement);
-                itemMap.put(i, replacement);
-            }
+        itemMap.put(i, replacement);
 
-        }
+        file.save();
 
     }
     public void addItems(ItemStack @NotNull [] item){
 
-        for(ItemStack i : item){
-
-            if(i.hasItemMeta()){
-                items.add(i);
-            }else{
-                items.add(i);
-            }
-
-        }
+        items.addAll(Arrays.asList(item));
 
     }
 

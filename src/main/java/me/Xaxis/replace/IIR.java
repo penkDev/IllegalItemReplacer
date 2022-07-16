@@ -23,13 +23,16 @@ public class IIR extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        bannedItems = new BannedItemManager(itemsFile, this);
+        bannedItems = new BannedItemManager(itemsFile);
         itemsFile.run(this, "ItemData");
         bannedItems.loadItems();
 
         Objects.requireNonNull(getCommand("replaceItem")).setExecutor(new ReplaceCommand(this, itemsFile));
         saveDefaultConfig();
         getServer().getPluginManager().registerEvents(new onInventoryClick(this, bannedItems), this);
+
+        itemsFile.get().set("Hi", "hello");
+        itemsFile.save();
 
 
     }

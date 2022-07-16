@@ -26,7 +26,7 @@ public class EmptyGui {
         gui = new Gui(INSTANCE, Utils.chat(emptyGUI.getTitle(INSTANCE)), emptyGUI.getSize(INSTANCE), player);
         player.openInventory(gui.getInventory());
         gui.createItemMeta(NEXT_BUTTON, emptyGUI.getPathName(), Material.PAPER.toString());
-        gui.getInventory().setItem(53, NEXT_BUTTON);
+        gui.getInventory().setItem(8, NEXT_BUTTON);
 
     }
 

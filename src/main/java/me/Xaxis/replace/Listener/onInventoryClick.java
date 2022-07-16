@@ -26,7 +26,7 @@ public class onInventoryClick implements Listener {
 
     public onInventoryClick(IIR instance, BannedItemManager itemManager) {
         this.instance = instance;
-        gui = new ReplacementGui(instance, itemManager);
+        gui = new ReplacementGui(instance);
         this.itemManager = itemManager;
 
     }
@@ -35,47 +35,65 @@ public class onInventoryClick implements Listener {
     public void onClick(@NotNull InventoryClickEvent e) {
 
         Player p = Bukkit.getPlayer(e.getWhoClicked().getUniqueId());
+        if(p == null) return;
 
         if (e.getView().getTitle().equalsIgnoreCase(Utils.chat(GUI.EMPTY_GUI.getTitle(instance)))) {
 
             if(checks(e)) {
 
                 ItemStack item = e.getCurrentItem();
-                Inventory inventory = Objects.requireNonNull(e.getClickedInventory());
+                Inventory inventory = e.getClickedInventory();
 
-                assert item != null;
+                if(item == null) return;
+                if(item.getItemMeta() == null) return;
+
                 if (item.getType() == Material.PAPER) {
                     System.out.println(GUI.EMPTY_GUI.getTitle(instance));
-                    if (Objects.requireNonNull(item.getItemMeta()).getDisplayName().equalsIgnoreCase(Utils.chat(GUI.EMPTY_GUI.getTitle(instance)))) {
+                    System.out.println(instance.getConfig().getString(Utils.chat(GUI.EMPTY_GUI.getPath()+".ITEMS.PAPER.NAME")));
 
-                        itemManager.addItems(inventory.getStorageContents());
+                    if (item.getItemMeta().getDisplayName().equalsIgnoreCase(Utils.chat(instance.getConfig().getString(GUI.EMPTY_GUI.getPath()+".ITEMS.PAPER.NAME")))) {
+
+                        if(inventory == null) return;
+                        itemManager.addItems(inventory.getContents());
                         itemManager.save();
-                        for(ItemStack i : inventory.getStorageContents()){
+                        for(ItemStack i : inventory.getContents()){
+                            if(i == null) return;
+                            if(i.getType() == Material.PAPER) return;
                             gui.openReplacementGui(p, i);
                         }
 
-
-
                     }
-                    gui.openReplacementGui(p, new ItemStack(Material.PAPER));
                 }
             }
         }
+
         if(e.getView().getTitle().equalsIgnoreCase(Utils.chat(GUI.REPLACEMENT_GUI.getTitle(instance)))){
+            System.out.println("-1");
 
             if(checks(e)) {
 
                 ItemStack item = e.getCurrentItem();
-                Inventory inventory = Objects.requireNonNull(e.getClickedInventory());
+                Inventory inventory = e.getClickedInventory();
+                System.out.println("0");
+
+                if(item == null) return;
+                if(inventory == null) return;
+                if(item.getItemMeta() == null) return;
 
                 if(item.getType() == Material.PAPER){
-                    if(Objects.requireNonNull(item.getItemMeta()).getDisplayName().equalsIgnoreCase(Utils.chat(GUI.REPLACEMENT_GUI.getTitle(instance)))) {
+                    System.out.println("1");
+                    if(item.getItemMeta().getDisplayName().equalsIgnoreCase(Utils.chat(instance.getConfig().getString(GUI.REPLACEMENT_GUI.getPath()+".ITEMS.PAPER.NAME")))) {
+                        System.out.println("2");
+                        ItemStack toBeReplaced = inventory.getItem(0);
+                        ItemStack replacer = inventory.getItem(1);
+                        if(replacer == null ) return;
+                        if(toBeReplaced == null) return;
 
-                    ItemStack toBeReplaced = inventory.getItem(0);
-                    ItemStack replacer = inventory.getItem(1);
+                        System.out.println("3");
 
-                        assert toBeReplaced != null;
                         itemManager.addItem(toBeReplaced, replacer);
+                        p.sendMessage(Utils.chat("&cSaved data!"));
+                        p.closeInventory();
 
 
                     }
