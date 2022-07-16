@@ -28,3 +28,6 @@ GUI:
     ITEMS:
       PAPER:
         NAME: "&aSubmit"
+        LORE:
+          - "Click me"
+          - "to Submit!"

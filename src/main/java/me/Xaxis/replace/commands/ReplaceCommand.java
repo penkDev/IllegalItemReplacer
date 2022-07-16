@@ -1,7 +1,9 @@
 package me.Xaxis.replace.commands;
 
+import me.Xaxis.replace.File.BannedItems;
 import me.Xaxis.replace.IIR;
 import me.Xaxis.replace.Lang;
+import me.Xaxis.replace.Manager.BannedItemManager;
 import me.Xaxis.replace.Permission;
 import me.Xaxis.replace.gui.EmptyGui;
 import me.Xaxis.replace.utility.Utils;
@@ -14,12 +16,14 @@ import org.jetbrains.annotations.NotNull;
 public class ReplaceCommand implements CommandExecutor {
 
     private final IIR instance;
+    private final BannedItems file;
 
     EmptyGui emptyGui;
 
-    public ReplaceCommand(IIR instance){
+    public ReplaceCommand(IIR instance, BannedItems file){
         this.instance = instance;
         emptyGui = new EmptyGui(instance);
+        this.file = file;
     }
 
     @Override
@@ -30,7 +34,7 @@ public class ReplaceCommand implements CommandExecutor {
             return true;
         }
 
-        if(!p.hasPermission(Permission.ADMIN.permission())){
+        if(!p.hasPermission(Permission.ADMIN.permission()) || !p.hasPermission(Permission.REPLACE_ITEMS.permission())){
             sender.sendMessage(Utils.chat(Lang.PREFIX.getMessage(instance)+Lang.NO_PERMISSION.getMessage(instance)));
             return true;
         }

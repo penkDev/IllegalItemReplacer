@@ -6,11 +6,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.Objects;
 
 public class BannedItems {
 
-    public BannedItems(IIR instance, String string){
-        run(instance, string);
+    public BannedItems(){
     }
 
     private File file;
@@ -24,14 +24,11 @@ public class BannedItems {
     @SneakyThrows
     public void run(IIR plugin, String fileName) {
 
-        if(Bukkit.getServer().getPluginManager().getPlugin("IllegalItemReplacer") == null) return;
-
-        if(!Bukkit.getServer().getPluginManager().getPlugin("IllegalItemReplacer").getDataFolder().exists()){
-            Bukkit.getServer().getPluginManager().getPlugin("IllegalItemReplacer").getDataFolder().mkdir();
-            return;
+        if(!Objects.requireNonNull(Bukkit.getServer().getPluginManager().getPlugin("IllegalItemReplacer")).getDataFolder().exists()){
+            Objects.requireNonNull(Bukkit.getServer().getPluginManager().getPlugin("IllegalItemReplacer")).getDataFolder().mkdir();
         }
 
-        File folder = new File(Bukkit.getServer().getPluginManager().getPlugin("IllegalItemReplacer").getDataFolder(), "Data");
+        File folder = new File(Objects.requireNonNull(Bukkit.getServer().getPluginManager().getPlugin("IllegalItemReplacer")).getDataFolder(), "Data");
 
         if(!folder.exists()) folder.mkdirs();
 
@@ -39,8 +36,8 @@ public class BannedItems {
             plugin.getDataFolder().mkdirs();
         }
 
-        this.file = new File(plugin.getDataFolder()+File.separator+"ItemData"+File.separator, fileName + ".yml");
-        this.configuration = new YamlConfiguration();
+        file = new File(folder, fileName + ".yml");
+        configuration = new YamlConfiguration();
 
         if(!file.exists()) {
             file.createNewFile();
