@@ -61,7 +61,12 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+        </repository>
     </repositories>
+
 
     <dependencies>
         <dependency>
@@ -71,9 +76,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>n.b</groupId>
-            <artifactId>b</artifactId>
-            <version>1.0</version>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
+            <version>1.19</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
