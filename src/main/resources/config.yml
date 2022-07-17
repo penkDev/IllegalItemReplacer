@@ -2,6 +2,11 @@
 # Example: &4Example of &bcolor &c code
 #DO NOT CHANGE THE IDENTIFIERS, THIS WILL BREAK THE PLUGIN!!! PLEASE CHANGE JUST THE VALUES!
 
+
+ENABLED: true
+
+EMERGENCY_STASH_LOCATION: {}
+
 LANG:
   NO_PERMISSION: '&4You do not have the required permissions to execute this command!'
   SENDER_NOT_PLAYER: '&4You cannot execute this command from the terminal'

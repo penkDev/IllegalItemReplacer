@@ -7,3 +7,8 @@ commands:
     aliases:
       - ri
     permission: IllegalItemReplacer.replaceItems
+  setPanicChestLocation:
+    description: set the panic chest location in case for some reason something goes wrong...
+    aliases:
+      - spcl
+    permission: IllegalItemReplacer.setPanicChestLocation

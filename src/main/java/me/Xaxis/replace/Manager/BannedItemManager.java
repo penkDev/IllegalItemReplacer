@@ -85,7 +85,7 @@ public class BannedItemManager {
     }
     public void addItem(@NotNull ItemStack i,@NotNull ItemStack replacement) {
 
-        ConfigurationSection is = itemsSection.createSection(i.getType().name());
+        ConfigurationSection is = itemsSection.createSection(i.getType().toString());
 
         is.set("toBeReplaced", i);
 
