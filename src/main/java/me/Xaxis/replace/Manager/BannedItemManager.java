@@ -35,11 +35,10 @@ public class BannedItemManager {
 
         if(!itemsSection.getKeys(false).isEmpty()) {
 
-            System.out.println("1");
 
             for (String name : itemsSection.getKeys(false)) {
 
-                System.out.println("2");
+
                 ConfigurationSection itemsConfigSection = itemsSection.getConfigurationSection(name);
 
                 if (itemsConfigSection == null) return;
@@ -47,17 +46,16 @@ public class BannedItemManager {
                 ItemStack replace = null;
                 ItemStack item = null;
 
-                System.out.println("3");
 
                 for (String sectionName : itemsConfigSection.getKeys(false)) {
 
                     if (sectionName.equalsIgnoreCase("replacementItem")) {
-                        System.out.println("4");
+
 
                         replace = itemsConfigSection.getItemStack("replacementItem");
 
                     } else if(sectionName.equalsIgnoreCase("toBeReplaced")){
-                        System.out.println("5");
+
 
                         item = itemsConfigSection.getItemStack("toBeReplaced");
 
@@ -67,17 +65,12 @@ public class BannedItemManager {
 
                 if (item == null) return;
                 if (replace == null) return;
-                System.out.println("6");
+
 
                 items.add(item);
                 itemMap.put(item, replace);
 
-                if (item.getItemMeta() != null && item.hasItemMeta()) {
-                    System.out.println("Loaded Item: " + item.getItemMeta().getDisplayName());
-                } else {
-                    System.out.println("Loaded Item: " + item.getType().name());
-                }
-
+                System.out.println("Loaded Item: " + name);
 
             }
         }

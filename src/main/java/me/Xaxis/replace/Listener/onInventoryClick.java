@@ -68,28 +68,26 @@ public class onInventoryClick implements Listener {
         }
 
         if(e.getView().getTitle().equalsIgnoreCase(Utils.chat(GUI.REPLACEMENT_GUI.getTitle(instance)))){
-            System.out.println("-1");
+
 
             if(checks(e)) {
 
                 ItemStack item = e.getCurrentItem();
                 Inventory inventory = e.getClickedInventory();
-                System.out.println("0");
+
 
                 if(item == null) return;
                 if(inventory == null) return;
                 if(item.getItemMeta() == null) return;
 
                 if(item.getType() == Material.PAPER){
-                    System.out.println("1");
+
                     if(item.getItemMeta().getDisplayName().equalsIgnoreCase(Utils.chat(instance.getConfig().getString(GUI.REPLACEMENT_GUI.getPath()+".ITEMS.PAPER.NAME")))) {
-                        System.out.println("2");
+
                         ItemStack toBeReplaced = inventory.getItem(0);
                         ItemStack replacer = inventory.getItem(1);
                         if(replacer == null ) return;
                         if(toBeReplaced == null) return;
-
-                        System.out.println("3");
 
                         itemManager.addItem(toBeReplaced, replacer);
                         p.sendMessage(Utils.chat("&cSaved data!"));

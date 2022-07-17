@@ -38,16 +38,13 @@ public class SetPanicChestCommand implements CommandExecutor {
         ConfigurationSection section = instance.getConfig().getConfigurationSection("EMERGENCY_STASH_LOCATION");
         if(section == null) return true;
 
-        Location location = p.getLocation();
-
-        if(location.getBlock().getType() != Material.CHEST){
+        if(p.getLocation().getBlock().getType() != Material.CHEST) {
             p.sendMessage(Utils.chat("&4You must be standing on a chest!"));
             return true;
         }
 
-        section.set("Location", location);
+        section.set("Location", p.getLocation());
         instance.saveConfig();
-        instance.reloadConfig();
 
         p.sendMessage(Utils.chat("&aSuccessfully set location!"));
 

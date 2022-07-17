@@ -19,7 +19,7 @@ OPTIONS:
 
 GUI:
   PLACE_ITEMS_GUI:
-    TITLE: "&cPlace your banned items here: "
+    TITLE: "&cPlace your banned item here: "
     SIZE: 9
     ITEMS:
       PAPER:
@@ -29,7 +29,7 @@ GUI:
           - "to go to"
           - "the next step!"
   REPLACEMENT_ITEMS_GUI:
-    TITLE: "&cPlace your replacement items here: "
+    TITLE: "&cPlace your replacement item here: "
     ITEMS:
       PAPER:
         NAME: "&aSubmit"

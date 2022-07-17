@@ -1,14 +1,20 @@
 package me.Xaxis.replace.Listener;
 
+import me.Xaxis.replace.GUI;
 import me.Xaxis.replace.IIR;
 import me.Xaxis.replace.Manager.BannedItemManager;
 import me.Xaxis.replace.Permission;
+import me.Xaxis.replace.utility.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -17,19 +23,69 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class onInventoryOpen implements Listener {
 
     private final BannedItemManager itemManager;
     private final boolean REPLACE_ITEMS_ENABLED ;
-    private final Location PANIC_CHEST_LOCATION;
+    private final IIR instance;
 
     public onInventoryOpen(@NotNull IIR instance, BannedItemManager itemManager){
         this.itemManager = itemManager;
         REPLACE_ITEMS_ENABLED = instance.getConfig().getBoolean("ENABLED");
-        ConfigurationSection section = instance.getConfig().getConfigurationSection("EMERGENCY_STASH_LOCATION");
-        assert section != null;
-        PANIC_CHEST_LOCATION = section.getLocation("Location");
+        this.instance = instance;
+
+    }
+
+    @EventHandler
+    public void onInvClose(InventoryCloseEvent e){
+
+        if(!REPLACE_ITEMS_ENABLED) return;
+
+        Player player = (Player) e.getPlayer();
+
+        if(player.hasPermission(Permission.BYPASS.permission())) return;
+
+        InventoryView inventory = player.getOpenInventory();
+
+        List<ItemStack> items = new ArrayList<>();
+
+        addItems(inventory, items);
+
+        for(ItemStack item : items){
+
+            replaceItems(inventory.getBottomInventory(), item);
+
+            replaceItems(inventory.getTopInventory(), item);
+
+        }
+    }
+
+    @EventHandler
+    public void onClick(InventoryClickEvent e){
+        if(!REPLACE_ITEMS_ENABLED) return;
+
+        Player player = (Player) e.getWhoClicked();
+
+        if(player.hasPermission(Permission.BYPASS.permission())) return;
+
+        InventoryView inventory = player.getOpenInventory();
+
+        if(inventory.getTitle().equalsIgnoreCase(Utils.chat(GUI.REPLACEMENT_GUI.getTitle(instance)))
+                || inventory.getTitle().equalsIgnoreCase(Utils.chat(GUI.EMPTY_GUI.getTitle(instance)))) return;
+
+        List<ItemStack> items = new ArrayList<>();
+
+        addItems(inventory, items);
+
+        for(ItemStack item : items){
+
+            replaceItems(inventory.getBottomInventory(), item);
+
+            replaceItems(inventory.getTopInventory(), item);
+
+        }
     }
 
     @EventHandler
@@ -59,7 +115,17 @@ public class onInventoryOpen implements Listener {
 
     public void replaceItems(@NotNull Inventory inventory, ItemStack item){
 
-        Chest chest = (Chest) PANIC_CHEST_LOCATION.getBlock();
+        ConfigurationSection section = instance.getConfig().getConfigurationSection("EMERGENCY_STASH_LOCATION");
+        if(section == null) return;
+        Location PANIC_CHEST_LOCATION = section.getLocation("Location");
+        Chest chest;
+        if(PANIC_CHEST_LOCATION == null) return;
+        if(PANIC_CHEST_LOCATION.getBlock().getType() == Material.CHEST){
+            chest = (Chest) PANIC_CHEST_LOCATION.getBlock().getState();
+        }else{
+            Bukkit.getServer().getLogger().log(Level.SEVERE, Utils.chat("IllegalItemReplacer found no chest! Make sure you did not break it!"));
+            return;
+        }
 
         inventory.all(item).entrySet().forEach(entry ->{
 
@@ -72,6 +138,7 @@ public class onInventoryOpen implements Listener {
                     chest.getBlockInventory().addItem(item);
 
                     ItemStack v = itemManager.getItemMap().get(i).clone();
+
                     v.setAmount(amt);
 
                     inventory.setItem(entry.getKey(), v);
