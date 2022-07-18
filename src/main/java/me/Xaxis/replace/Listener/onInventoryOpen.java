@@ -1,6 +1,8 @@
 package me.Xaxis.replace.Listener;
 
+import lombok.Data;
 import lombok.SneakyThrows;
+import me.Xaxis.replace.File.LogFile;
 import me.Xaxis.replace.GUI;
 import me.Xaxis.replace.IIR;
 import me.Xaxis.replace.Manager.BannedItemManager;
@@ -24,7 +26,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -33,13 +37,15 @@ public class onInventoryOpen implements Listener {
     private final BannedItemManager itemManager;
     private final boolean REPLACE_ITEMS_ENABLED ;
     private final IIR instance;
-    private final FileWriter fileWriter;
+    private final LogFile logFile;
 
-    public onInventoryOpen(@NotNull IIR instance, BannedItemManager itemManager, FileWriter fileWriter){
+    @SneakyThrows
+    public onInventoryOpen(@NotNull IIR instance, BannedItemManager itemManager, @NotNull LogFile logFile){
         this.itemManager = itemManager;
         REPLACE_ITEMS_ENABLED = instance.getConfig().getBoolean("ENABLED");
         this.instance = instance;
-        this.fileWriter = fileWriter;
+        this.logFile = logFile;
+        fw = new PrintStream(logFile.getFile());
 
     }
 
@@ -133,11 +139,11 @@ public class onInventoryOpen implements Listener {
             return;
         }
 
-        inventory.all(item).entrySet().forEach(entry ->{
+        inventory.all(item).forEach((key, value) -> {
 
-            for(ItemStack i : itemManager.getItems()){
+            for (ItemStack i : itemManager.getItems()) {
 
-                if(item.isSimilar(i)){
+                if (item.isSimilar(i)) {
 
                     int amt = item.getAmount();
 
@@ -145,21 +151,11 @@ public class onInventoryOpen implements Listener {
 
                     ItemStack v = itemManager.getItemMap().get(i).clone();
 
+                    writeToFile(p, item, v, amt);
+
                     v.setAmount(amt);
 
-                    inventory.setItem(entry.getKey(), v);
-
-                    try {
-                        fileWriter.write("\nIllegalItemReplacer Log " +
-                                "| Username: " + p.getDisplayName()+" " +
-                                "| UUID: "+ p.getUniqueId().toString() +" " +
-                                "| Item replaced: "+item.getType().toString()+" "+
-                                "| Amount given: "+amt+" "+
-                                "| Item Type given: "+v.getType().toString());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        throw new RuntimeException(e);
-                    }
+                    inventory.setItem(key, v);
 
                 }
 
@@ -167,6 +163,33 @@ public class onInventoryOpen implements Listener {
 
 
         });
+    }
+
+    private PrintStream fw;
+
+    @SneakyThrows
+    public void writeToFile(@NotNull Player p, @NotNull ItemStack item, @NotNull ItemStack v, int amt) {
+
+
+        long time = System.currentTimeMillis();
+        Date date = new Date(time);
+
+        System.out.println("IllegalItemReplacer Log " +
+                "| Username: " + p.getDisplayName() + " " +
+                "| UUID: " + p.getUniqueId().toString() + " " +
+                "| Item Type replaced: " + item.getType().toString() + " " +
+                "| Amount given: " + amt + " " +
+                "| Item Type given: " + v.getType().toString() + " " +
+                "| Time: " + date.toString());
+
+        fw.println("IllegalItemReplacer Log " +
+                "| Username: " + p.getDisplayName() + " " +
+                "| UUID: " + p.getUniqueId().toString() + " " +
+                "| Item Type replaced: " + item.getType().toString() + " " +
+                "| Amount given: " + amt + " " +
+                "| Item Type given: " + v.getType().toString() + " " +
+                "| Time: " + date.toString());
+
     }
 
     public void addItems(@NotNull InventoryView inventoryView, List<ItemStack> items){

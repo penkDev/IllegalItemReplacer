@@ -25,12 +25,13 @@ public class IIR extends JavaPlugin {
         bannedItems = new BannedItemManager(itemsFile);
         itemsFile.run(this, "ItemData");
         bannedItems.loadItems();
+        logFile.create();
 
         getCommand("replaceItem").setExecutor(new ReplaceCommand(this, itemsFile));
         getCommand("setPanicChestLocation").setExecutor(new SetPanicChestCommand(this));
         saveDefaultConfig();
         getServer().getPluginManager().registerEvents(new onInventoryClick(this, bannedItems), this);
-        getServer().getPluginManager().registerEvents(new onInventoryOpen(this, bannedItems, logFile.getFileWriter()), this);
+        getServer().getPluginManager().registerEvents(new onInventoryOpen(this, bannedItems, logFile), this);
 
 
     }

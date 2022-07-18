@@ -2,18 +2,16 @@ package me.Xaxis.replace.File;
 
 import lombok.SneakyThrows;
 import me.Xaxis.replace.IIR;
-import me.Xaxis.replace.utility.Utils;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
 
 public class LogFile {
 
     private final IIR instance;
-    private FileWriter fileWriter;
+    private File f;
 
     public LogFile(IIR instance){
         this.instance = instance;
@@ -26,8 +24,8 @@ public class LogFile {
             instance.getDataFolder().mkdirs();
         }
 
-        File f = new File(instance.getDataFolder()+File.pathSeparator+"Data");
-
+        File f = new File(instance.getDataFolder()+File.separator+"Data", "Logs.txt");
+        this.f = f;
         if(!f.exists()){
             try{
                 f.createNewFile();
@@ -37,12 +35,9 @@ public class LogFile {
             }
         }
 
-        fileWriter = new FileWriter(f);
-
     }
 
-    public FileWriter getFileWriter(){
-        return fileWriter;
+    public File getFile(){
+        return f;
     }
-
 }
