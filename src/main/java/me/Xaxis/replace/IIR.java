@@ -1,6 +1,7 @@
 package me.Xaxis.replace;
 
 import me.Xaxis.replace.File.BannedItems;
+import me.Xaxis.replace.File.LogFile;
 import me.Xaxis.replace.Listener.onInventoryClick;
 import me.Xaxis.replace.Listener.onInventoryOpen;
 import me.Xaxis.replace.Manager.BannedItemManager;
@@ -12,19 +13,15 @@ import java.util.Objects;
 
 public class IIR extends JavaPlugin {
 
-    private static IIR IIR;
-
-    public static IIR getInstance() {
-        return IIR;
-    }
-
-    BannedItems itemsFile = new BannedItems();
-
+    BannedItems itemsFile;
+    LogFile logFile;
     BannedItemManager bannedItems;
 
     @Override
     public void onEnable() {
 
+        logFile = new LogFile(this);
+        itemsFile = new BannedItems(this);
         bannedItems = new BannedItemManager(itemsFile);
         itemsFile.run(this, "ItemData");
         bannedItems.loadItems();
@@ -33,7 +30,7 @@ public class IIR extends JavaPlugin {
         getCommand("setPanicChestLocation").setExecutor(new SetPanicChestCommand(this));
         saveDefaultConfig();
         getServer().getPluginManager().registerEvents(new onInventoryClick(this, bannedItems), this);
-        getServer().getPluginManager().registerEvents(new onInventoryOpen(this, bannedItems), this);
+        getServer().getPluginManager().registerEvents(new onInventoryOpen(this, bannedItems, logFile.getFileWriter()), this);
 
 
     }

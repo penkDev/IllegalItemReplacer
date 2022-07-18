@@ -10,7 +10,10 @@ import java.util.Objects;
 
 public class BannedItems {
 
-    public BannedItems(){
+    IIR instance;
+
+    public BannedItems(IIR instance){
+        this.instance = instance;
     }
 
     private File file;
@@ -24,11 +27,11 @@ public class BannedItems {
     @SneakyThrows
     public void run(IIR plugin, String fileName) {
 
-        if(!Objects.requireNonNull(Bukkit.getServer().getPluginManager().getPlugin("IllegalItemReplacer")).getDataFolder().exists()){
-            Objects.requireNonNull(Bukkit.getServer().getPluginManager().getPlugin("IllegalItemReplacer")).getDataFolder().mkdir();
+        if(!instance.getDataFolder().exists()){
+            instance.getDataFolder().mkdir();
         }
 
-        File folder = new File(Objects.requireNonNull(Bukkit.getServer().getPluginManager().getPlugin("IllegalItemReplacer")).getDataFolder(), "Data");
+        File folder = new File(instance.getDataFolder(), "Data");
 
         if(!folder.exists()) folder.mkdirs();
 

@@ -1,5 +1,6 @@
 package me.Xaxis.replace.Listener;
 
+import lombok.SneakyThrows;
 import me.Xaxis.replace.GUI;
 import me.Xaxis.replace.IIR;
 import me.Xaxis.replace.Manager.BannedItemManager;
@@ -21,6 +22,8 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -30,11 +33,13 @@ public class onInventoryOpen implements Listener {
     private final BannedItemManager itemManager;
     private final boolean REPLACE_ITEMS_ENABLED ;
     private final IIR instance;
+    private final FileWriter fileWriter;
 
-    public onInventoryOpen(@NotNull IIR instance, BannedItemManager itemManager){
+    public onInventoryOpen(@NotNull IIR instance, BannedItemManager itemManager, FileWriter fileWriter){
         this.itemManager = itemManager;
         REPLACE_ITEMS_ENABLED = instance.getConfig().getBoolean("ENABLED");
         this.instance = instance;
+        this.fileWriter = fileWriter;
 
     }
 
@@ -55,9 +60,9 @@ public class onInventoryOpen implements Listener {
 
         for(ItemStack item : items){
 
-            replaceItems(inventory.getBottomInventory(), item);
+            replaceItems(inventory.getBottomInventory(), item, player);
 
-            replaceItems(inventory.getTopInventory(), item);
+            replaceItems(inventory.getTopInventory(), item, player);
 
         }
     }
@@ -81,9 +86,9 @@ public class onInventoryOpen implements Listener {
 
         for(ItemStack item : items){
 
-            replaceItems(inventory.getBottomInventory(), item);
+            replaceItems(inventory.getBottomInventory(), item, player);
 
-            replaceItems(inventory.getTopInventory(), item);
+            replaceItems(inventory.getTopInventory(), item, player);
 
         }
     }
@@ -105,15 +110,16 @@ public class onInventoryOpen implements Listener {
 
         for(ItemStack item : items){
 
-            replaceItems(inventory.getBottomInventory(), item);
+            replaceItems(inventory.getBottomInventory(), item, player);
 
-            replaceItems(inventory.getTopInventory(), item);
+            replaceItems(inventory.getTopInventory(), item, player);
 
         }
 
     }
 
-    public void replaceItems(@NotNull Inventory inventory, ItemStack item){
+    @SneakyThrows
+    public void replaceItems(@NotNull Inventory inventory, ItemStack item, Player p){
 
         ConfigurationSection section = instance.getConfig().getConfigurationSection("EMERGENCY_STASH_LOCATION");
         if(section == null) return;
@@ -142,6 +148,19 @@ public class onInventoryOpen implements Listener {
                     v.setAmount(amt);
 
                     inventory.setItem(entry.getKey(), v);
+
+                    try {
+                        fileWriter.write("\nIllegalItemReplacer Log " +
+                                "| Username: " + p.getDisplayName()+" " +
+                                "| UUID: "+ p.getUniqueId().toString() +" " +
+                                "| Item replaced: "+item.getType().toString()+" "+
+                                "| Amount given: "+amt+" "+
+                                "| Item Type given: "+v.getType().toString());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException(e);
+                    }
+
                 }
 
             }
