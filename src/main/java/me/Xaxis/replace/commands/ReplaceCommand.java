@@ -31,10 +31,12 @@ public class ReplaceCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
 
-        if(!(sender instanceof Player p)){
+        if(!(sender instanceof Player)){
             sender.sendMessage(Utils.chat(Lang.PREFIX.getMessage(instance)+Lang.SENDER_NOT_PLAYER.getMessage(instance)));
             return true;
         }
+
+        Player p = (Player) sender;
 
         if(!p.hasPermission(Permission.ADMIN.permission()) || !p.hasPermission(Permission.REPLACE_ITEMS.permission())){
             sender.sendMessage(Utils.chat(Lang.PREFIX.getMessage(instance)+Lang.NO_PERMISSION.getMessage(instance)));

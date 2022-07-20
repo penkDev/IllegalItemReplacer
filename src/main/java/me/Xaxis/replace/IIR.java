@@ -7,9 +7,8 @@ import me.Xaxis.replace.Listener.onInventoryOpen;
 import me.Xaxis.replace.Manager.BannedItemManager;
 import me.Xaxis.replace.commands.ReplaceCommand;
 import me.Xaxis.replace.commands.SetPanicChestCommand;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Objects;
 
 public class IIR extends JavaPlugin {
 
@@ -33,6 +32,16 @@ public class IIR extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new onInventoryClick(this, bannedItems), this);
         getServer().getPluginManager().registerEvents(new onInventoryOpen(this, bannedItems, logFile), this);
 
+        registerBStats();
 
     }
+
+    public void registerBStats(){
+
+        int superSecretCode = 15845;
+
+        Metrics metrics = new Metrics(this, superSecretCode);
+
+    }
+
 }
