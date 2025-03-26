@@ -1,15 +1,15 @@
 package me.Xaxis.replace.Manager;
 
-import me.Xaxis.replace.File.BannedItems;
-import me.Xaxis.replace.IIR;
-import org.bukkit.Material;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import me.Xaxis.replace.File.BannedItems;
 
 public class BannedItemManager {
 
@@ -31,7 +31,12 @@ public class BannedItemManager {
         }else{
             itemsSection = file.get().getConfigurationSection("Items");
         }
-        file.save();
+        
+        try {
+            file.save();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         if(!itemsSection.getKeys(false).isEmpty()) {
 
@@ -86,7 +91,11 @@ public class BannedItemManager {
 
         itemMap.put(i, replacement);
 
-        file.save();
+        try {
+            file.save();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
     public void addItems(ItemStack @NotNull [] item){
@@ -95,8 +104,12 @@ public class BannedItemManager {
 
     }
 
-    public void save(){
-        file.save();
+    public void save() {
+        try {
+            file.save();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public ArrayList<ItemStack> getItems(){

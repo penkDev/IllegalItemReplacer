@@ -24,6 +24,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -38,15 +39,20 @@ public class onInventoryOpen implements Listener {
     private final boolean REPLACE_ITEMS_ENABLED ;
     private final IIR instance;
     private final LogFile logFile;
+    private PrintStream fw;
 
-    @SneakyThrows
     public onInventoryOpen(@NotNull IIR instance, BannedItemManager itemManager, @NotNull LogFile logFile){
         this.itemManager = itemManager;
         REPLACE_ITEMS_ENABLED = instance.getConfig().getBoolean("ENABLED");
         this.instance = instance;
         this.logFile = logFile;
-        fw = new PrintStream(logFile.getFile());
-
+        
+        try {
+            fw = new PrintStream(logFile.getFile());
+        } catch (FileNotFoundException e) {
+            instance.getLogger().severe("Failed to open log file: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @EventHandler
@@ -164,8 +170,6 @@ public class onInventoryOpen implements Listener {
 
         });
     }
-
-    private PrintStream fw;
 
     @SneakyThrows
     public void writeToFile(@NotNull Player p, @NotNull ItemStack item, @NotNull ItemStack v, int amt) {

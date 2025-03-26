@@ -1,12 +1,12 @@
 package me.Xaxis.replace.File;
 
-import lombok.SneakyThrows;
-import me.Xaxis.replace.IIR;
-import org.bukkit.Bukkit;
+import java.io.File;
+import java.io.IOException;
+
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-import java.util.Objects;
+import me.Xaxis.replace.IIR;
 
 public class BannedItems {
 
@@ -24,8 +24,7 @@ public class BannedItems {
      * @param plugin The class of the owner of the file
      * @param fileName The file name (without file extension)
      */
-    @SneakyThrows
-    public void run(IIR plugin, String fileName) {
+    public void run(IIR plugin, String fileName) throws IOException, InvalidConfigurationException {
 
         if(!instance.getDataFolder().exists()){
             instance.getDataFolder().mkdir();
@@ -53,16 +52,13 @@ public class BannedItems {
         return configuration;
     }
 
-    @SneakyThrows
-    public void reload(){
+    public void reload() throws IOException {
         this.configuration.save(file);
         configuration = YamlConfiguration.loadConfiguration(file);
     }
 
-    @SneakyThrows
-    public void save() {
+    public void save() throws IOException {
         this.configuration.save(file);
-
     }
 
 }
